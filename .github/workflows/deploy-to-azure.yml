@@ -22,10 +22,11 @@ jobs:
     - name: Push the Docker image to Docker Hub
       run: docker push ${{ secrets.REGISTRY_USERNAME }}/smart-crud:${{ github.sha }}
 
-    - name: Log in to Azure CLI
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Set up Azure CLI
+      uses: azure/setup-azure-cli@v1
+
+    - name: Log in to Azure
+      run: az login --service-principal -u ${{ secrets.AZURE_CREDENTIALS.clientId }} -p ${{ secrets.AZURE_CREDENTIALS.clientSecret }} --tenant ${{ secrets.AZURE_CREDENTIALS.tenantId }}
 
     - name: Deploy to Azure App Service
       uses: azure/webapps-deploy@v2
